@@ -252,3 +252,603 @@ function processInput(input) {
 // 调用时只选择需要的数据
 const { left, right } = processInput(input);
 ```
+
+## 六、字符串
+
+1. `字符串使用单引号`
+
+```javascript
+// bad
+const name = "Capt. Janeway";
+ 
+// good
+const name = 'Capt. Janeway';
+```
+
+2. `字符串超过 80 个字节应该使用字符串连接号换行。`
+```javascript
+// bad
+const errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
+ 
+// bad
+const errorMessage = 'This is a super long error that was thrown because \
+    of Batman. When you stop to think about how Batman had anything to do \
+    with this, you would get nowhere \
+    fast.';
+ 
+// good
+const errorMessage = 'This is a super long error that was thrown because ' +
+    'of Batman. When you stop to think about how Batman had anything to do ' +
+    'with this, you would get nowhere fast.';
+```
+3. `程序化生成字符串时，使用模板字符串代替字符串连接`
+
+模板字符串更为简洁，更具可读性
+
+```javascript
+// bad
+function sayHi(name) {
+    return 'How are you, ' + name + '?';
+}
+ 
+// bad
+function sayHi(name) {
+    return ['How are you, ', name, '?'].join();
+}
+ 
+// good
+function sayHi(name) {
+    return `How are you, ${name}?`;
+}
+```
+## 七、函数
+
+1. `使用函数声明代替函数表达式`
+
+函数声明是可命名的，所以他们在调用栈中更容易被识别。此外，函数声明会把整个函数提升（hoisted），而函数表达式只会把函数的引用变量名提升。这条规则使得箭头函数可以取代函数表达式。
+
+```javascript
+// bad
+const foo = function () {
+};
+ 
+// good
+function foo() {
+}
+```
+
+2. `函数表达式`
+
+```javascript
+// 立即调用的函数表达式 (IIFE)
+(() => {
+    console.log('Welcome to the Internet. Please follow me.');
+})();
+```
+
+3. `永远不要在一个非函数代码块（if、while 等）中声明一个函数，把那个函数赋给一个变量。浏览器允许你这么做，但它们的解析表现不一致`
+
+4. 注意: ECMA-262 把 block 定义为一组语句。函数声明不是语句。阅读 ECMA-262 关于这个问题的[说明](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97)
+
+```javascript
+// bad
+if (currentUser) {
+    function test() {
+        console.log('Nope.');
+    }
+}
+ 
+// good
+let test;
+    if (currentUser) {
+    test = () => {
+        console.log('Yup.');
+    };
+}
+```
+
+5. `永远不要把参数命名为 arguments。这将取代原来函数作用域内的 arguments 对象`
+
+```javascript
+// bad
+function nope(name, options, arguments) {
+    // ...stuff...
+}
+ 
+// good
+function yup(name, options, args) {
+    // ...stuff...
+}
+```
+
+6. `不要使用 arguments。可以选择 rest 语法 ... 替代`
+使用 ... 能明确你要传入的参数。另外 rest 参数是一个真正的数组，而 arguments 是一个类数组
+```javascript
+// bad
+function concatenateAll() {
+    const args = Array.prototype.slice.call(arguments);
+    return args.join('');
+}
+ 
+// good
+function concatenateAll(...args) {
+    return args.join('');
+}
+
+```
+
+7. `直接给函数的参数指定默认值，不要使用一个变化的函数参数`
+```javascript
+// really bad
+function handleThings(opts) {
+    // 不！我们不应该改变函数参数。
+    // 更加糟糕: 如果参数 opts 是 false 的话，它就会被设定为一个对象。
+    // 但这样的写法会造成一些 Bugs。
+    //（译注：例如当 opts 被赋值为空字符串，opts 仍然会被下一行代码设定为一个空对象。）
+    opts = opts || {};
+    // ...
+}
+ 
+// still bad
+function handleThings(opts) {
+    if (opts === void 0) {
+        opts = {};
+    }
+    // ...
+}
+ 
+// good
+function handleThings(opts = {}) {
+    // ...
+}
+```
+8. `直接给函数参数赋值时需要避免副作用`
+
+```javascript
+var b = 1;
+// bad
+function count(a = b++) {
+    console.log(a);
+}
+count();  // 1
+count();  // 2
+count(3); // 3
+count();  // 3
+```
+
+## 八、箭头函数
+
+1. `当你必须使用函数表达式（或传递一个匿名函数）时，使用箭头函数符号`
+
+箭头函数创造了新的一个 this 执行环境（译注：参考 Arrow functions - JavaScript | MDN 和 ES6 arrow functions, syntax and lexical scoping），通常情况下都能满足你的需求，而且这样的写法更为简洁
+
+```javascript
+// bad
+[1, 2, 3].map(function (x) {
+    return x * x;
+});
+ 
+// good
+[1, 2, 3].map((x) => {
+    return x * x;
+});
+```
+
+
+2. `如果一个函数适合用一行写出并且只有一个参数，那就把花括号、圆括号和 return 都省略掉。如果不是，那就不要省略`
+在链式调用中可读性很高
+```javascript
+// good
+[1, 2, 3].map(x => x * x);
+ 
+// good
+[1, 2, 3].reduce((total, n) => {
+    return total + n;
+}, 0);
+```
+
+## 九、构造器
+
+1. `总是使用 class。避免直接操作 prototype`
+
+class 语法更为简洁更易读
+
+```javascript
+// bad
+function Queue(contents = []) {
+    this._queue = [...contents];
+}
+Queue.prototype.pop = function() {
+    const value = this._queue[0];
+    this._queue.splice(0, 1);
+    return value;
+}
+ 
+ 
+// good
+class Queue {
+constructor(contents = []) {
+    this._queue = [...contents];
+    }
+    pop() {
+        const value = this._queue[0];
+        this._queue.splice(0, 1);
+        return value;
+    }
+}
+```
+
+2. `使用 extends 继承`
+extends 是一个内建的原型继承方法并且不会破坏 instanceof
+```javascript
+// bad
+const inherits = require('inherits');
+function PeekableQueue(contents) {
+    Queue.apply(this, contents);
+}
+inherits(PeekableQueue, Queue);
+PeekableQueue.prototype.peek = function() {
+    return this._queue[0];
+}
+ 
+// good
+class PeekableQueue extends Queue {
+    peek() {
+        return this._queue[0];
+    }
+}
+```
+
+3. `方法可以返回 this 来帮助链式调用`
+
+
+```javascript
+// bad
+Jedi.prototype.jump = function() {
+    this.jumping = true;
+    return true;
+};
+ 
+Jedi.prototype.setHeight = function(height) {
+    this.height = height;
+};
+ 
+const luke = new Jedi();
+luke.jump(); // => true
+luke.setHeight(20); // => undefined
+ 
+// good
+class Jedi {
+    jump() {
+        this.jumping = true;
+        return this;
+    }
+ 
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+ 
+const luke = new Jedi();
+ 
+luke.jump()
+    .setHeight(20);
+```
+
+4. `可以写一个自定义的 toString() 方法，但要确保它能正常运行并且不会引起副作用`
+
+```javascript
+
+class Jedi {
+    constructor(options = {}) {
+        this.name = options.name || 'no name';
+    }
+ 
+    getName() {
+        return this.name;
+    }
+ 
+    toString() {
+        return `Jedi - ${this.getName()}`;
+    }
+}
+```
+
+### 十、模块
+
+1. `总是使用模组 (import/export) 而不是其他非标准模块系统。你可以编译为你喜欢的模块系统`
+
+模块就是未来，让我们开始迈向未来吧
+
+```javascript
+// bad
+const AirbnbStyleGuide = require('./AirbnbStyleGuide');
+module.exports = AirbnbStyleGuide.es6;
+ 
+// ok
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+export default AirbnbStyleGuide.es6;
+ 
+// best
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+2. `不要使用通配符 import`
+
+这样能确保你只有一个默认 export
+
+```javascript
+// bad
+import * as AirbnbStyleGuide from './AirbnbStyleGuide';
+ 
+// good
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+```
+
+3. `不要从 import 中直接 export`
+
+虽然一行代码简洁明了，但让 import 和 export 各司其职让事情能保持一致
+
+```javascript
+// bad
+// filename es6.js
+export { es6 as default } from './airbnbStyleGuide';
+ 
+// good
+// filename es6.js
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+## 十一、Iterators and Generators
+
+1. `不要使用 iterators。使用高阶函数例如 map() 和 reduce() 替代 for-of`
+这加强了我们不变的规则。处理纯函数的回调值更易读，这比它带来的副作用更重要。
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+ 
+// bad
+let sum = 0;
+for (let num of numbers) {
+    sum += num;
+}
+ 
+sum === 15;
+ 
+// good
+let sum = 0;
+numbers.forEach((num) => sum += num);
+sum === 15;
+ 
+// best (use the functional force)
+const sum = numbers.reduce((total, num) => total + num, 0);
+sum === 15;
+```
+
+## 十二、属性
+
+1. `使用 . 来访问对象的属性`
+
+```javascript
+const luke = {
+    jedi: true,
+    age: 28
+};
+ 
+// bad
+const isJedi = luke['jedi'];
+ 
+// good
+const isJedi = luke.jedi;
+```
+
+2. `当通过变量访问属性时使用中括号 []`
+
+```javascript
+const luke = {
+    jedi: true,
+    age: 28
+};
+ 
+function getProp(prop) {
+    return luke[prop];
+}
+ 
+const isJedi = getProp('jedi');
+```
+
+## 十三、变量
+
+1. `一直使用 const 来声明变量，如果不这样做就会产生全局变量。我们需要避免全局命名空间的污染。`
+
+```javascript
+// bad
+superPower = new SuperPower();
+ 
+// good
+const superPower = new SuperPower();
+```
+2. `使用 const 声明每一个变量`
+
+增加新变量将变的更加容易，而且你永远不用再担心调换错 ';' 跟','
+```javascript
+// bad
+const items = getItems(),
+goSportsTeam = true,
+dragonball = 'z';
+ 
+// bad
+// (compare to above, and try to spot the mistake)
+const items = getItems(),
+goSportsTeam = true;
+dragonball = 'z';
+ 
+// good
+const items = getItems();
+const goSportsTeam = true;
+const dragonball = 'z';
+```
+3. `将所有的 const 和 let 分组`
+
+当你需要把已赋值变量赋值给未赋值变量时非常有用
+
+```javascript
+// bad
+let i, len, dragonball,
+    items = getItems(),
+    goSportsTeam = true;
+ 
+// bad
+let i;
+const items = getItems();
+let dragonball;
+const goSportsTeam = true;
+let len;
+ 
+// good
+const goSportsTeam = true;
+const items = getItems();
+let dragonball;
+let i;
+let length;
+```
+
+4. `在你需要的地方给变量赋值，但请把它们放在一个合理的位置`
+
+let 和 const 是块级作用域而不是函数作用域
+
+```javascript
+// good
+function() {
+    test();
+
+    console.log('doing stuff..');
+  
+    //..other stuff..
+    const name = getName();
+ 
+    if (name === 'test') {
+        return false;
+    }
+ 
+    return name;
+}
+ 
+// bad - unnecessary function call
+function(hasName) {
+    const name = getName();
+ 
+    if (!hasName) {
+        return false;
+    }
+ 
+    this.setFirstName(name);
+ 
+    return true;
+    }
+ 
+// good
+function(hasName) {
+    if (!hasName) {
+    return false;
+}
+ 
+const name = getName();
+this.setFirstName(name);
+ 
+return true;
+}
+```
+
+## 十四、Hoisting
+
+1. `var 声明会被提升至该作用域的顶部，但它们赋值不会提升。let 和 const 被赋予了一种称为「暂时性死区」的概念。这对于了解为什么 type of 不再安全相当重要`
+
+```javascript
+// 我们知道这样运行不了
+// （假设 notDefined 不是全局变量）
+
+function example() {
+    console.log(notDefined); // => throws a ReferenceError
+}
+ 
+// 由于变量提升的原因，
+// 在引用变量后再声明变量是可以运行的。
+// 注：变量的赋值 `true` 不会被提升。
+function example() {
+    console.log(declaredButNotAssigned); // => undefined
+    var declaredButNotAssigned = true;
+}
+ 
+// 编译器会把函数声明提升到作用域的顶层，
+// 这意味着我们的例子可以改写成这样：
+function example() {
+    let declaredButNotAssigned;
+    console.log(declaredButNotAssigned); // => undefined
+    declaredButNotAssigned = true;
+}
+ 
+// 使用 const 和 let
+function example() {
+    console.log(declaredButNotAssigned); // => throws a ReferenceError
+    console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
+    const declaredButNotAssigned = true;
+}
+```
+2. `匿名函数表达式的变量名会被提升，但函数内容并不会`
+
+```javascript
+function example() {
+    console.log(anonymous); // => undefined
+ 
+    anonymous(); // => TypeError anonymous is not a function
+ 
+    var anonymous = function() {
+        console.log('anonymous function expression');
+    };
+}
+```
+
+2. `命名的函数表达式的变量名会被提升，但函数名和函数函数内容并不会`
+
+```javascript
+function example() {
+    console.log(named); // => undefined
+ 
+    named(); // => TypeError named is not a function
+ 
+    superPower(); // => ReferenceError superPower is not defined
+ 
+    var named = function superPower() {
+        console.log('Flying');
+    };
+}
+ 
+// the same is true when the function name
+// is the same as the variable name.
+function example() {
+    console.log(named); // => undefined
+ 
+    named(); // => TypeError named is not a function
+ 
+    var named = function named() {
+        console.log('named');
+    }
+}
+
+```
+
+3. `函数声明的名称和函数体都会被提升`
+
+```javascript
+function example() {
+    superPower(); // => Flying
+ 
+    function superPower() {
+    console.log('Flying');
+    }
+}
+```
