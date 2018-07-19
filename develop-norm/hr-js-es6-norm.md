@@ -852,3 +852,735 @@ function example() {
     }
 }
 ```
+
+## 十五、比较运算符 & 等号
+
+1. `优先使用 === 和 !== 而不是 == 和 !=`
+
+2. `条件表达式例如 if 语句通过抽象方法 ToBoolean 强制计算它们的表达式并且总是遵守下面的规则`
+
+>对象 被计算为 true
+Undefined 被计算为 false
+Null 被计算为 false
+布尔值 被计算为 布尔的值
+数字 如果是 +0、-0、或 NaN 被计算为 false, 否则为 true
+字符串 如果是空字符串 '' 被计算为 false，否则为 true
+
+```javascript
+if ([0]) {
+    // true
+    // An array is an object, objects evaluate to true
+}
+```
+3. `使用简写`
+
+```javascript
+v// bad
+if (name !== '') {
+    // ...stuff...
+}
+ 
+// good
+if (name) {
+    // ...stuff...
+}
+ 
+// bad
+if (collection.length > 0) {
+    // ...stuff...
+}
+ 
+// good
+if (collection.length) {
+    // ...stuff...
+}
+```
+
+## 十六、代码块
+
+2. `使用大括号包裹所有的多行代码块`
+
+```javascript
+// bad
+if (test)
+return false;
+ 
+// good
+if (test) return false;
+ 
+// good
+if (test) {
+    return false;
+}
+ 
+// bad
+function() { return false; }
+ 
+// good
+function() {
+    return false;
+}
+```
+
+2. `如果通过 if 和 else 使用多行代码块，把 else 放在 if 代码块关闭括号的同一行`
+
+```javacript
+// bad
+if (test) {
+    thing1();
+    thing2();
+}
+else {
+    thing3();
+}
+ 
+// good
+if (test) {
+    thing1();
+    thing2();
+} else {
+    thing3();
+}
+```
+
+## 十七、注释
+
+1. `使用 /** ... */ 作为多行注释。包含描述、指定所有参数和返回值的类型和值`
+
+```javascript
+// bad
+// make() returns a new element
+// based on the passed in tag name
+//
+// @param {String} tag
+// @return {Element} element
+function make(tag) {
+ 
+    // ...stuff...
+ 
+    return element;
+}
+ 
+// good
+/**
+* make() returns a new element
+* based on the passed in tag name
+*
+* @param {String} tag
+* @return {Element} element
+*/
+function make(tag) {
+ 
+    // ...stuff...
+ 
+    return element;
+}
+```
+
+2. `使用 // 作为单行注释。在评论对象上面另起一行使用单行注释。在注释前插入空行`
+
+```javascript
+// bad
+const active = true;  // is current tab
+ 
+// good
+// is current tab
+const active = true;
+ 
+// bad
+function getType() {
+    console.log('fetching type...');
+    // set the default type to 'no type'
+    const type = this._type || 'no type';
+ 
+ 
+    return type;
+}
+ 
+// good
+function getType() {
+    console.log('fetching type...');
+ 
+    // set the default type to 'no type'
+    const type = this._type || 'no type';
+ 
+    return type;
+}
+```
+
+3. `给注释增加 FIXME 或 TODO 的前缀可以帮助其他开发者快速了解这是一个需要复查的问题，或是给需要实现的功能提供一个解决方式。这将有别于常见的注释，因为它们是可操作的。使用 FIXME -- need to figure this out 或者 TODO -- need to implement`
+
+4. `使用 // FIXME: 标注问题`
+
+```javascript
+class Calculator {
+    constructor() {
+        // FIXME: shouldn't use a global here
+        total = 0;
+    }
+}
+```
+
+5. `使用 // TODO: 标注问题的解决方式`
+
+```javascript
+class Calculator {
+    constructor() {
+        // TODO: total should be configurable by an options param
+        this.total = 0;
+    }
+}
+```
+
+## 十八、空白
+
+1. `使用 2 个空格作为缩进`
+
+```javascript
+// bad
+    function() {
+∙∙∙∙const name;
+}
+ 
+// bad
+function() {
+∙const name;
+}
+ 
+// good
+function() {
+∙∙const name;
+}
+```
+
+2. `在花括号前放一个空格`
+
+```javascript
+// bad
+function test(){
+    console.log('test');
+}
+ 
+// good
+function test() {
+    console.log('test');
+}
+ 
+// bad
+dog.set('attr',{
+    age: '1 year',
+    breed: 'Bernese Mountain Dog',
+});
+ 
+// good
+dog.set('attr', {
+    age: '1 year',
+    breed: 'Bernese Mountain Dog',
+});
+```
+3. `在控制语句（if、while 等）的小括号前放一个空格。在函数调用及声明中，不在函数的参数列表前加空格`
+
+```javascript
+// bad
+if(isJedi) {
+    fight ();
+}
+ 
+// good
+if (isJedi) {
+    fight();
+}
+ 
+// bad
+function fight () {
+    console.log ('Swooosh!');
+}
+ 
+// good
+function fight() {
+    console.log('Swooosh!');
+}
+```
+
+4. `使用空格把运算符隔开`
+
+```javascript
+// bad
+const x=y+5;
+ 
+// good
+const x = y + 5;
+```
+
+5. `在文件末尾插入一个空行`
+
+```javascript
+// bad
+(function(global) {
+    // ...stuff...
+})(this);
+ 
+// bad
+(function(global) {
+    // ...stuff...
+})(this);↵
+↵
+ 
+// good
+(function(global) {
+// ...stuff...
+})(this);↵
+```
+
+6. `在使用长方法链时进行缩进。使用前面的点 . 强调这是方法调用而不是新语句`
+
+```javascript
+// bad
+$('#items').find('.selected').highlight().end().find('.open').updateCount();
+ 
+// bad
+$('#items').
+    find('.selected').
+        highlight().
+        end().
+    find('.open').
+        updateCount();
+ 
+// good
+$('#items')
+    .find('.selected')
+        .highlight()
+        .end()
+    .find('.open')
+        .updateCount();
+ 
+// bad
+const leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
+    .attr('width', (radius + margin) * 2).append('svg:g')
+    .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
+    .call(tron.led);
+ 
+// good
+const leds = stage.selectAll('.led')
+        .data(data)
+    .enter().append('svg:svg')
+        .classed('led', true)
+        .attr('width', (radius + margin) * 2)
+    .append('svg:g')
+        .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
+    .call(tron.led);
+```
+
+7. `在块末和新语句前插入空行`
+
+```javascript
+// bad
+if (foo) {
+    return bar;
+}
+return baz;
+ 
+// good
+if (foo) {
+    return bar;
+}
+ 
+return baz;
+ 
+// bad
+var obj = {
+    foo: function () {
+},
+bar: function () {
+    }
+};
+return obj;
+ 
+// good
+var obj = {
+    foo: function () {
+    },
+ 
+    bar: function () {
+    }
+};
+ 
+return obj;
+```
+
+## 十九、逗号
+
+1. `行首逗号：不需要`
+
+```javascript
+// bad
+const story = [
+    once
+    , upon
+    , aTime
+];
+ 
+// good
+const story = [
+    once,
+    upon,
+    aTime,
+];
+ 
+// bad
+const hero = {
+    firstName: 'Ada'
+    , lastName: 'Lovelace'
+    , birthYear: 1815
+    , superPower: 'computers'
+};
+ 
+// good
+const hero = {
+    firstName: 'Ada',
+    lastName: 'Lovelace',
+    birthYear: 1815,
+    superPower: 'computers',
+};
+```
+
+2. `增加结尾的逗号: 需要`
+这会让 git diffs 更干净。另外，像 babel 这样的转译器会移除结尾多余的逗号，也就是说你不必担心老旧浏览器的尾逗号问题
+
+```javascript
+// bad - git diff without trailing comma
+const hero = {
+    firstName: 'Florence',
+    -    lastName: 'Nightingale'
+    +    lastName: 'Nightingale',
+    +    inventorOf: ['coxcomb graph', 'modern nursing']
+}
+ 
+// good - git diff with trailing comma
+const hero = {
+    firstName: 'Florence',
+    lastName: 'Nightingale',
+    +    inventorOf: ['coxcomb chart', 'modern nursing'],
+}
+ 
+// bad
+const hero = {
+    firstName: 'Dana',
+    lastName: 'Scully'
+};
+ 
+const heroes = [
+    'Batman',
+    'Superman'
+];
+ 
+// good
+const hero = {
+    firstName: 'Dana',
+    lastName: 'Scully',
+};
+ 
+const heroes = [
+    'Batman',
+    'Superman',
+];
+```
+## 二十、分号
+
+1. `使用分号`
+```javascript
+// bad
+(function() {
+    const name = 'Skywalker'
+    return name
+})()
+ 
+// good
+(() => {
+    const name = 'Skywalker';
+    return name;
+})();
+ 
+// good (防止函数在两个 IIFE 合并时被当成一个参数)
+;(() => {
+    const name = 'Skywalker';
+    return name;
+})();
+```
+## 二十一、类型转换
+
+1. `在语句开始时执行类型转换`
+
+2. `字符串`
+
+```javascript
+//  => this.reviewScore = 9;
+ 
+// bad
+const totalScore = this.reviewScore + '';
+ 
+// good
+const totalScore = String(this.reviewScore);
+```
+
+3. `对数字使用 parseInt 转换，并带上类型转换的基数`
+
+```javascript
+const inputValue = '4';
+ 
+// bad
+const val = new Number(inputValue);
+ 
+// bad
+const val = +inputValue;
+ 
+// bad
+const val = inputValue >> 0;
+ 
+// bad
+const val = parseInt(inputValue);
+ 
+// good
+const val = Number(inputValue);
+ 
+// good
+const val = parseInt(inputValue, 10);
+```
+
+4. `如果因为某些原因 parseInt 成为你所做的事的瓶颈而需要使用位操作解决性能问题时，留个注释说清楚原因和你的目的`
+
+```javascript
+// good
+/**
+* 使用 parseInt 导致我的程序变慢，
+* 改成使用位操作转换数字快多了。
+*/
+const val = inputValue >> 0;
+```
+
+5. `小心使用位操作运算符。数字会被当成 64 位值，但是位操作运算符总是返回 32 位的整数。位操作处理大于 32 位的整数值时还会导致意料之外的行为。最大的 32 位整数是 2,147,483,647`
+
+```javascript
+2147483647 >> 0 //=> 2147483647
+2147483648 >> 0 //=> -2147483648
+2147483649 >> 0 //=> -2147483647
+```
+
+6. `布尔`
+
+```javascript
+const age = 0;
+ 
+// bad
+const hasAge = new Boolean(age);
+ 
+// good
+const hasAge = Boolean(age);
+ 
+// good
+const hasAge = !!age;
+```
+
+## 二十二、命名规则
+
+1. `避免单字母命名。命名应具备描述性`
+```javascript
+// bad
+function q() {
+    // ...stuff...
+}
+ 
+// good
+function query() {
+    // ..stuff..
+}
+```
+
+2. `使用驼峰式命名对象、函数和实例`
+
+```javascript
+// bad
+const OBJEcttsssss = {};
+const this_is_my_object = {};
+function c() {}
+ 
+// good
+const thisIsMyObject = {};
+function thisIsMyFunction() {}
+```
+
+3. `使用帕斯卡式命名构造函数或类`
+
+```javascript
+// bad
+function user(options) {
+    this.name = options.name;
+}
+ 
+const bad = new user({
+    name: 'nope',
+});
+ 
+// good
+class User {
+    constructor(options) {
+        this.name = options.name;
+    }
+}
+ 
+const good = new User({
+    name: 'yup',
+});
+```
+
+4. `使用下划线 _ 开头命名私有属性`
+```javascript
+// bad
+this.__firstName__ = 'Panda';
+this.firstName_ = 'Panda';
+ 
+// good
+this._firstName = 'Panda';
+```
+
+5. `别保存 this 的引用。使用箭头函数或 Function#bind`
+
+```javascript
+// bad
+function foo() {
+    const self = this;
+    return function() {
+        console.log(self);
+    };
+}
+ 
+// bad
+function foo() {
+    const that = this;
+    return function() {
+        console.log(that);
+    };
+}
+ 
+// good
+function foo() {
+    return () => {
+        console.log(this);
+    };
+}
+```
+
+6. `如果你的文件只输出一个类，那你的文件名必须和类名完全保持一致`
+
+```javascript
+// file contents
+class CheckBox {
+    // ...
+}
+export default CheckBox;
+ 
+// in some other file
+// bad
+import CheckBox from './checkBox';
+ 
+// bad
+import CheckBox from './check_box';
+ 
+// good
+import CheckBox from './CheckBox';
+```
+
+7. `当你导出默认的函数时使用驼峰式命名。你的文件名必须和函数名完全保持一致`
+
+```javascript
+function makeStyleGuide() {
+}
+ 
+export default makeStyleGuide;
+```
+
+8. `当你导出单例、函数库、空对象时使用帕斯卡式命名`
+
+```javascript
+const AirbnbStyleGuide = {
+    es6: {
+    }
+};
+ 
+export default AirbnbStyleGuide
+```
+
+## 二十三、存取器
+
+1. `属性的存取函数不是必须的`
+
+2. `如果你需要存取函数时使用 getVal() 和 setVal('hello')`
+```javascript
+// bad
+dragon.age();
+ 
+// good
+dragon.getAge();
+   
+// bad
+dragon.age(25);
+ 
+// good
+dragon.setAge(25);
+```
+
+3. `如果属性是布尔值，使用 isVal() 或 hasVal()`
+
+```javascript
+// bad
+if (!dragon.age()) {
+    return false;
+}
+ 
+// good
+if (!dragon.hasAge()) {
+    return false;
+}
+```
+
+4. `创建 get() 和 set() 函数是可以的，但要保持一致`
+
+```javascript
+class Jedi {
+    constructor(options = {}) {
+        const lightsaber = options.lightsaber || 'blue';
+        this.set('lightsaber', lightsaber);
+    }
+ 
+    set(key, val) {
+        this[key] = val;
+    }
+ 
+    get(key) {
+        return this[key];
+    }
+}
+```
+
+### 二十四、事件
+
+1. `当给事件附加数据时（无论是 DOM 事件还是私有事件），传入一个哈希而不是原始值。这样可以让后面的贡献者增加更多数据到事件数据而无需找出并更新事件的每一个处理器`
+
+```javascript
+// bad
+$(this).trigger('listingUpdated', listing.id);
+    ...
+ 
+$(this).on('listingUpdated', function(e, listingId) {
+    // do something with listingId
+});
+
+// good
+$(this).trigger('listingUpdated', { listingId : listing.id });
+ 
+    ...
+ 
+$(this).on('listingUpdated', function(e, data) {
+    // do something with data.listingId
+});
+```
